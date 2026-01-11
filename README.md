@@ -71,7 +71,7 @@ arr-media-agent/
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/yourusername/arr-media-agent.git
+git clone https://github.com/RClark4958/arr-media-agent.git
 cd arr-media-agent
 
 # Install backend dependencies
