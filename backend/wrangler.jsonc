@@ -1,0 +1,80 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "arr-media-agent",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-11-18",
+	"observability": {
+		"enabled": true
+	},
+
+	/**
+	 * Bindings
+	 */
+
+	// Workers AI binding for LLM inference
+	"ai": {
+		"binding": "AI"
+	},
+
+	// D1 Database for user preferences and request history
+	// Create with: npx wrangler d1 create media-agent-db
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "media-agent-db",
+			"database_id": "YOUR_D1_DATABASE_ID",
+			"migrations_dir": "migrations"
+		}
+	],
+
+	// KV namespace for session management and caching
+	// Create with: npx wrangler kv namespace create SESSIONS
+	"kv_namespaces": [
+		{
+			"binding": "SESSIONS",
+			"id": "YOUR_KV_NAMESPACE_ID"
+		}
+	],
+
+	// Durable Objects for conversation state
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "CONVERSATIONS",
+				"class_name": "ConversationDO"
+			}
+		]
+	},
+
+	// Durable Objects migrations
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_classes": ["ConversationDO"]
+		}
+	],
+
+	/**
+	 * Environment Variables
+	 * Note: Use `wrangler secret put <NAME>` for sensitive values
+	 */
+	// Generate your own Plex Client ID:
+	// node -e "console.log('media-agent-' + crypto.randomUUID())"
+	"vars": {
+		"PLEX_CLIENT_ID": "media-agent-YOUR-UUID-HERE"
+	}
+
+	/**
+	 * Secrets (set via CLI):
+	 * wrangler secret put SONARR_URL
+	 * wrangler secret put SONARR_API_KEY
+	 * wrangler secret put RADARR_URL
+	 * wrangler secret put RADARR_API_KEY
+	 * wrangler secret put TAUTULLI_URL
+	 * wrangler secret put TAUTULLI_API_KEY
+	 */
+}
